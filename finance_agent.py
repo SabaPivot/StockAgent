@@ -70,3 +70,67 @@ class FinanceToolkit(Toolkit):
         except Exception as e:
             logger.error(f"Error running Finance Agent: {e}")
             return f"Error: {e}"
+
+# class FinanceToolkit(Toolkit):
+#     """
+#     FinanceToolkit directly integrates financial data tools and provides a method
+#     to analyze financial queries without wrapping an Agent.
+#     """
+#     def __init__(self, today: str = today, **kwargs):
+#         super().__init__(name="finance_toolkit")
+        
+#         # Instantiate the underlying tools directly.
+#         self.yfinance = YFinanceTools(
+#             stock_price=True,
+#             analyst_recommendations=True,
+#             company_info=True
+#         )
+#         self.exa = ExaTools(start_published_date=today, type="keyword")
+        
+#         # Register the main method for finance analysis.
+#         self.register(self.analyze_finance)
+
+#     def analyze_finance(self, query: str) -> str:
+#         """
+#         Processes the financial query by directly calling the underlying tools.
+#         Combines stock data, analyst recommendations, and additional market info.
+#         """
+#         try:
+#             logger.info(f"Processing finance query: {query}")
+            
+#             # Retrieve financial data using YFinanceTools.
+#             # (Replace these method calls with the actual methods your tool provides.)
+#             stock_data = self.yfinance.get_current_stock_price(query)
+#             analyst_data = self.yfinance.get_analyst_recommendations(query)
+#             company_info = self.yfinance.get_company_info(query)
+#             stock_fundamentals = self.yfinance.get_stock_fundamentals(query)
+            
+#             # Retrieve additional market info using ExaTools.
+#             # (Replace this with the appropriate search method from ExaTools.)
+#             extra_info = self.exa.search_exa(query)
+            
+#             # Compose a final report. You can adjust formatting (tables, markdown, etc.)
+#             report = dedent(f"""
+#             ### Financial Analysis Report for {query}
+            
+#             **Stock Price Data:**  
+#             {stock_data}
+
+#             **Stock Fudamental Data:**
+#             {stock_fundamentals}
+            
+#             **Analyst Recommendations:**  
+#             {analyst_data}
+            
+#             **Company Info:**  
+#             {company_info}
+            
+#             **Additional Market Information:**  
+#             {extra_info}
+#             """)
+            
+#             logger.info("Finance analysis completed successfully.")
+#             return report
+#         except Exception as e:
+#             logger.error(f"Error analyzing finance data: {e}")
+#             return f"Error: {e}"
