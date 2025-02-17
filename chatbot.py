@@ -6,7 +6,7 @@ import typer
 from typing import List
 from dataclasses import dataclass
 from textwrap import dedent
-from finance_agent import ask_finance_agent
+from finance_agent import FinanceToolkit
 
 @dataclass
 class ChatbotAgent:
@@ -45,7 +45,7 @@ class ChatbotAgent:
             storage=self.agent_storage,
             read_chat_history=True,
             add_history_to_messages=True,
-            tools=[ask_finance_agent],
+            tools=[FinanceToolkit()],
             instructions="Use tools to fetch a real time data",
         )
 
