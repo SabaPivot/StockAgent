@@ -1,0 +1,3 @@
+agno==1.1.4
+openai==1.63.2
+SQLAlchemy==2.0.38
