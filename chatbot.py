@@ -34,7 +34,7 @@ class ChatbotAgent:
         self.agent = Agent(
             name="Chatbot",
             role="A chatbot assisting the user with everything.",
-            model=OpenAIChat(id="gpt-4o", max_tokens=512, temperature=0.1),
+            model=OpenAIChat(id="gpt-4o", max_tokens=1024, temperature=0.4),
             show_tool_calls=True,
             add_datetime_to_instructions=True,
             session_id=self.session_id,

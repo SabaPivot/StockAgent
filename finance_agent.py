@@ -17,7 +17,7 @@ class FinanceToolkit(Toolkit):
         self.finance_agent = Agent(
             name="Finance Agent",
             role="Search the web to provide Financial guide.",
-            model=OpenAIChat(id="gpt-4o", max_tokens=512, temperature=0.1),
+            model=OpenAIChat(id="gpt-4o", max_tokens=1024, temperature=0.1),
             tools=[
                 YFinanceTools(
                     stock_price=True,
