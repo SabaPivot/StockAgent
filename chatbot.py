@@ -7,6 +7,7 @@ from typing import List
 from dataclasses import dataclass
 from textwrap import dedent
 from finance_agent import FinanceToolkit
+from agno.tools.duckduckgo import DuckDuckGoTools
 
 @dataclass
 class ChatbotAgent:
@@ -16,11 +17,9 @@ class ChatbotAgent:
     session_id: str = None
 
     def if_new_session(self) -> bool:
-        """Ask the user if they want to start a new session."""
         return typer.confirm("Do you want to start a new session?")
 
     def get_session_id(self) -> str:
-        """Retrieve the latest session ID or start a new session."""
         session_id = None
 
         if not self.if_new_session():
@@ -30,7 +29,6 @@ class ChatbotAgent:
         return session_id
 
     def create_agent(self):
-        """Initialize the chatbot with financial capabilities."""
         self.session_id = self.get_session_id()
 
         self.agent = Agent(
@@ -45,8 +43,26 @@ class ChatbotAgent:
             storage=self.agent_storage,
             read_chat_history=True,
             add_history_to_messages=True,
-            tools=[FinanceToolkit()],
-            instructions="Use tools to fetch a real time data",
+            tools=[FinanceToolkit(), DuckDuckGoTools()],
+            description=dedent("""\
+                You are an helpful and nice assistant that answers almost every questions.
+                Never answer with 'sorry', 'I cannot fetch real-time data'.
+            """),
+            instructions=dedent("""\
+                When you are asked about the following topics:
+                *1. companies*
+                *2. economy*
+                *3. stocks*
+                *4. investment*
+                *5. interest rate*
+                *6. latest news about economy and finance*
+                Always find FinanceToolkit for help. Your answers on these topic should be organized and have grounding factors.
+                
+                Otherwise, you can look for DuckDuckGoTools for latest information.
+                For instance, if you are asked about weather, you can find it via DuckDuckGoTools.
+
+                Your answer must be always organized.
+            """),
         )
 
         if self.session_id is None:
