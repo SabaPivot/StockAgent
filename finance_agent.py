@@ -10,10 +10,6 @@ from agno.tools import Toolkit
 today = date.today().strftime("%Y-%m-%d")
 
 class FinanceToolkit(Toolkit):
-    """
-    FinanceToolkit is a toolkit for providing financial insights by leveraging an underlying finance agent.
-    It registers the `ask_finance_agent` method, which uses the finance agent to process queries.
-    """
     def __init__(self, today: str = today, **kwargs):
         super().__init__(name="finance_toolkit")
         
@@ -27,11 +23,18 @@ class FinanceToolkit(Toolkit):
                     stock_price=True,
                     analyst_recommendations=True,
                     company_info=True
-                ),
-                ExaTools(start_published_date=today, type="keyword")
+                )
             ],
+            description=dedent("""\
+                You are a turly sincere financial assistant that answers every question.
+                You are news-sensitive. So reach out to ExaTools to fetch the latest news.
+                Always state your source.
+            """),
             instructions=dedent("""\
                 You are a skilled financial analyst with expertise in market data!
+                Always answer with grounding facts and evidence. **Do not speak generally**.
+                                
+                You must follow the format below:
 
                 Follow these steps when analyzing financial data:
                 1. Start with the latest stock price, trading volume, and daily range.
@@ -54,18 +57,74 @@ class FinanceToolkit(Toolkit):
             markdown=True,
             add_datetime_to_instructions=True,
         )
+
+        self.web_agent=Agent(
+            name="Web Agent",
+            role="Search the web for information",
+            model=OpenAIChat(id="gpt-4o"),
+            tools=[ExaTools()],
+            instructions=dedent("""\
+                You are an experienced web researcher and news analyst! 🔍
+
+                Follow these steps when searching for information:
+                1. Start with the most recent and relevant sources
+                2. Cross-reference information from multiple sources
+                3. Prioritize reputable news outlets and official sources
+                4. Always cite your sources with links
+                5. Focus on market-moving news and significant developments
+
+                Your style guide:
+                - Present information in a clear, journalistic style
+                - Use bullet points for key takeaways
+                - Include relevant quotes when available
+                - Specify the date and time for each piece of news
+                - Highlight market sentiment and industry trends
+                - End with a brief analysis of the overall narrative
+                - Pay special attention to regulatory news, earnings reports, and strategic announcements\
+            """),
+            show_tool_calls=True,
+            markdown=True,
+        )
+        self.agent_team = Agent(
+            team=[self.web_agent, self.finance_agent],
+            model=OpenAIChat(id="gpt-4o"),
+            instructions=dedent("""\
+                You are the lead editor of a prestigious financial news desk! 📰
+
+                Your role:
+                1. Coordinate between the web researcher and financial analyst
+                2. Combine their findings into a compelling narrative
+                3. Ensure all information is properly sourced and verified
+                4. Present a balanced view of both news and data
+                5. Highlight key risks and opportunities
+
+                Your style guide:
+                - Start with an attention-grabbing headline
+                - Begin with a powerful executive summary
+                - Present financial data first, followed by news context
+                - Use clear section breaks between different types of information
+                - Include relevant charts or tables when available
+                - Add 'Market Sentiment' section with current mood
+                - Include a 'Key Takeaways' section at the end
+                - End with 'Risk Factors' when appropriate
+                - Sign off with 'Market Watch Team' and the current date\
+            """),
+            add_datetime_to_instructions=True,
+            show_tool_calls=True,
+            markdown=True,
+        )
         
         # Register the ask_finance_agent method in the toolkit.
-        self.register(self.ask_finance_agent)
+        self.register(self.ask_finance_agent_team)
 
-    def ask_finance_agent(self, query: str) -> str:
+    def ask_finance_agent_team(self, query: str) -> str:
         """
         Runs the finance agent with the provided query and returns its response.
         """
         try:
-            logger.info(f"Running Finance Agent with query: {query}")
-            result = self.finance_agent.run(query)
-            logger.info("Finance Agent response received.")
+            logger.info(f"Running Agent team with query: {query}")
+            result = self.agent_team.run(query)
+            logger.info("Agent team response received.")
             return result.content
         except Exception as e:
             logger.error(f"Error running Finance Agent: {e}")
