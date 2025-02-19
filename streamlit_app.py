@@ -13,7 +13,7 @@ os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 st.title("FN (Finance + News) Chat")
 
 # Create a temporary ChatbotAgent to fetch existing session IDs.
-temp_agent = ChatbotAgent()
+temp_agent = ChatbotAgent() # This class directly accesses to the chat.db
 existing_sessions = temp_agent.agent_storage.get_all_session_ids()  # returns a list of session IDs
 session_options = ["New Session"] + existing_sessions
 
@@ -30,7 +30,7 @@ if "prev_selected_session" not in st.session_state or st.session_state.prev_sele
     chatbot.create_agent()
     st.session_state.chatbot_agent = chatbot.agent
 
-    # Load chat history using our custom function.
+    # Load chat history from the exisiting session.
     if selected_session == "New Session":
         st.session_state.chat_history = []
     else:
@@ -53,7 +53,7 @@ if user_input:
     with st.chat_message("user"):
         st.markdown(user_input)
     
-    # Get the chatbot response (assuming agent.run returns an object with a .content attribute).
+    # Get the chatbot response
     response = st.session_state.chatbot_agent.run(user_input)
     bot_message = response.content
 
