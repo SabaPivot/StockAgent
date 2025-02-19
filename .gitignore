@@ -1,0 +1,8 @@
+# env file
+.env
+
+# chat db
+tmp/
+
+# cache
+__pycache__/
