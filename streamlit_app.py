@@ -1,8 +1,10 @@
-import streamlit as st
-from chatbot import ChatbotAgent
-from dotenv import load_dotenv
 import os
-from message_history import extract_conversation_by_session
+
+import streamlit as st
+from dotenv import load_dotenv
+
+from src.chatbot import ChatbotAgent
+from src.message_history import extract_conversation_by_session
 
 load_dotenv()
 
