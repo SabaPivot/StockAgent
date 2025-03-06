@@ -6,7 +6,7 @@ import typer
 from typing import List
 from dataclasses import dataclass
 from textwrap import dedent
-from finance_agent import FinanceToolkit
+from src.finance_agent import FinanceToolkit
 from agno.tools.duckduckgo import DuckDuckGoTools
 
 @dataclass

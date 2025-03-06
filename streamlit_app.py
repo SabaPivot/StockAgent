@@ -11,7 +11,7 @@ load_dotenv()
 os.environ["EXA_API_KEY"] = os.getenv("EXA_API_KEY")
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
-st.title("FN (Finance + News) Chat")
+st.title("StockAgent with real-time market news service")
 
 # Create a temporary ChatbotAgent to fetch existing session IDs.
 temp_agent = ChatbotAgent() # This class directly accesses to the chat.db
