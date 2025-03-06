@@ -2,9 +2,8 @@ import streamlit as st
 from chatbot import ChatbotAgent
 from dotenv import load_dotenv
 import os
-from message_history import extract_conversation_by_session  # Use our custom function
+from message_history import extract_conversation_by_session
 
-# Load environment variables from .env
 load_dotenv()
 
 os.environ["EXA_API_KEY"] = os.getenv("EXA_API_KEY")
@@ -14,7 +13,7 @@ st.title("FN (Finance + News) Chat")
 
 # Create a temporary ChatbotAgent to fetch existing session IDs.
 temp_agent = ChatbotAgent() # This class directly accesses to the chat.db
-existing_sessions = temp_agent.agent_storage.get_all_session_ids()  # returns a list of session IDs
+existing_sessions = temp_agent.agent_storage.get_all_session_ids()
 session_options = ["New Session"] + existing_sessions
 
 # Sidebar: let the user select an existing session or start a new one.
