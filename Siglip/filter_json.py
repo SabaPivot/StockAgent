@@ -12,18 +12,15 @@ with open("/mnt/WHY/VLM/Deepseek/VLM-R1/QA_DATASET/Test/SQA/formatted_Class_QA.j
 args = parse_args()
 # Split candidate labels into a list, stripping whitespace
 candidate_labels = [label.strip() for label in args.candidate_labels.split(',')]
-print(f"Filtering for any of these labels: {candidate_labels}")
+print(f"Filtering for EXACT matches to: {candidate_labels}")
 
 lines = []
 for item in data:
-    # Split normal_caption into individual labels
-    item_labels = [label.strip() for label in item["normal_caption"].split(',')]
-    
-    # Check if any of the item's labels match any of our candidate labels
-    if any(label in candidate_labels for label in item_labels):
+    # Only include if normal_caption is EXACTLY one of the candidate labels
+    if item["normal_caption"] in candidate_labels:
         lines.append(item)
 
-print(f"Found {len(lines)} entries matching at least one of the candidate labels")
+print(f"Found {len(lines)} entries with exact matches to candidate labels")
 
 with open("filtered_formatted_Class_QA.json", "w") as f:
     json.dump(lines, f, indent=4)
